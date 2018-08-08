@@ -24,7 +24,6 @@ OK = OrdinaryKriging(data[:, 0], data[:, 1], data[:, 2], variogram_model='spheri
 # Creates the kriged grid and the variance grid. Allows for kriging on a rectangular
 # grid of points, on a masked rectangular grid of points, or with arbitrary points.
 # (See OrdinaryKriging.__doc__ for more information.)
-z, ss = OK.execute('grid', 648005.0, 5083600.0)
+z, ss = OK.execute('grid', 650000.0, 5000000.0)
 
 print(z)
-print(ss)

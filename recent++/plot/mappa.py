@@ -25,8 +25,8 @@ Y0, Y1 = data[:,1].min(), data[:,1].max()
 
 X0 = 450000
 X1 = 700000
-Y0 = 4920000
-Y1 = 5170000
+Y0 = 4930000
+Y1 = 5180000
 
 NUM = 400.0
 
@@ -40,7 +40,7 @@ gridy = np.arange(Y0, Y1, (Y1-Y0)/NUM)
 # calculates the parameters by fitting the variogram model to the binned
 # experimental semivariogram. The verbose kwarg controls code talk-back, and
 # the enable_plotting kwarg controls the display of the semivariogram.
-OK = OrdinaryKriging(data[:, 0], data[:, 1], data[:, 2], variogram_model='spherical', verbose=False, enable_plotting=False)
+OK = OrdinaryKriging(data[:, 0], data[:, 1], data[:, 2], variogram_model='linear', verbose=False, enable_plotting=False)
 
 # Creates the kriged grid and the variance grid. Allows for kriging on a rectangular
 # grid of points, on a masked rectangular grid of points, or with arbitrary points.
@@ -51,12 +51,18 @@ extent = (X0,X1,Y0,Y1)
 im = plt.imshow(z, cmap='jet', aspect='auto', extent=extent, origin="lower") # pl is pylab imported a pl
 plt.colorbar(im)
 
+# from scipy.ndimage import imread
+# im = imread('Maschera.png', mode='RGBA')
+# plt.imshow(im, extent=extent)
+
 for shape in sf.shapeRecords():
     x = [i[0] for i in shape.shape.points[:]]
     y = [i[1] for i in shape.shape.points[:]]
 	
     plt.plot(x,y)
 
+
+#plt.savefig("Immagine.png", dpi=300)
 plt.show()
 
 # Writes the kriged grid to an ASCII grid file.
