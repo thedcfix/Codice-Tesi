@@ -10,7 +10,7 @@ print("Loading data...")
 data = pd.read_csv('tabella.csv',sep=',', decimal='.')
 data["DATE_TIME"] = pd.to_datetime(data["DATE_TIME"])
 
-col_list = ["DATE_TIME", "UTM32N_Est", "UTM32N_Nord"]
+col_list = ["DATE_TIME", "UTM32N_Est", "UTM32N_Nord", "ALTITUDE"]
 selection = data[col_list]
 
 print(selection)

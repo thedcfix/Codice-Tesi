@@ -10,8 +10,12 @@ import matplotlib.cm as cm
 import matplotlib.colors as colors
 import matplotlib.patches as mpatches
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+
+
 import shapefile as shp
-sf = shp.Reader("Regione_polygon.shp")
+sf = shp.Reader("C:\\Users\\david\\Desktop\\Codice-Tesi\\shapefile\\Regione_polygon.shp")
 
 # reading the data
 data = pd.read_csv('result.csv',sep=';', decimal='.')
@@ -23,10 +27,23 @@ data = np.array(data[col_list])
 X0, X1 = data[:,0].min(), data[:,0].max()
 Y0, Y1 = data[:,1].min(), data[:,1].max()
 
-X0 = 450000
-X1 = 700000
-Y0 = 4930000
-Y1 = 5180000
+# tutta allargata
+# X0 = 450000
+# X1 = 700000
+# Y0 = 4930000
+# Y1 = 5180000
+
+# zone utili
+X0 = 463000
+X1 = 666000
+Y0 = 4950000
+Y1 = 5150000
+
+# area hinterland
+# X0 = 497000
+# X1 = 536000
+# Y0 = 5025000
+# Y1 = 5060000
 
 NUM = 400.0
 
@@ -40,15 +57,22 @@ gridy = np.arange(Y0, Y1, (Y1-Y0)/NUM)
 # calculates the parameters by fitting the variogram model to the binned
 # experimental semivariogram. The verbose kwarg controls code talk-back, and
 # the enable_plotting kwarg controls the display of the semivariogram.
-OK = OrdinaryKriging(data[:, 0], data[:, 1], data[:, 2], variogram_model='linear', verbose=False, enable_plotting=False)
-
+OK = OrdinaryKriging(data[:, 0], data[:, 1], data[:, 2], variogram_model='spherical', verbose=False, enable_plotting=False)
+#OK = UniversalKriging(data[:, 0], data[:, 1], data[:, 2], variogram_model='linear',
+#					  drift_terms=['regional_linear'])
 # Creates the kriged grid and the variance grid. Allows for kriging on a rectangular
 # grid of points, on a masked rectangular grid of points, or with arbitrary points.
 # (See OrdinaryKriging.__doc__ for more information.)
 z, ss = OK.execute('grid', gridx, gridy)
 
+print("AVG sigma:", np.average(ss), "\nMAX sigma:", np.max(ss), "\nMIN sigma:", np.min(ss), "\nMEDIAN sigma:", np.median(ss), "\n75° percentile sigma:", 
+		np.percentile(ss, 75), "\n90° percentile sigma:", np.percentile(ss, 90), "\n95° percentile sigma:", np.percentile(ss, 95), "\n99° percentile sigma:", np.percentile(ss, 99))
+
+#colors = ["sandybrown" for x in range(int(NUM))]
+#plt.hist(ss, bins=np.arange(ss.min(), ss.max()), color=colors)
+
 extent = (X0,X1,Y0,Y1)
-im = plt.imshow(z, cmap='jet', aspect='auto', extent=extent, origin="lower") # pl is pylab imported a pl
+im = plt.imshow(z, cmap='inferno', aspect='auto', extent=extent, origin="lower") # pl is pylab imported a pl
 plt.colorbar(im)
 
 # from scipy.ndimage import imread
@@ -56,11 +80,10 @@ plt.colorbar(im)
 # plt.imshow(im, extent=extent)
 
 for shape in sf.shapeRecords():
-    x = [i[0] for i in shape.shape.points[:]]
-    y = [i[1] for i in shape.shape.points[:]]
+	x = [i[0] for i in shape.shape.points[:]]
+	y = [i[1] for i in shape.shape.points[:]]
 	
-    plt.plot(x,y)
-
+	plt.plot(x,y)
 
 #plt.savefig("Immagine.png", dpi=300)
 plt.show()
