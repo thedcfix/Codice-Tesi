@@ -38,7 +38,7 @@ def interpolateWeather(data, measure):
 		model = 'exponential'
 		print("Interpolation model:", model)
 	elif measure == "Umidità Relativa":
-		model='spherical'
+		model='exponential'
 		print("Interpolation model:", model)
 	
 	id = []
@@ -91,6 +91,11 @@ def interpolatePollutants(data, measure, flag):
 		# joining the data to add stations' locations to every record
 		merged = pd.merge(data, stations, how='inner', on=['IdSensore', 'IdSensore'])
 	else:
+		print("\nLoading air quality stations...")
+		print("Filtering ", measure.lower(), " stations...")
+		data = data.loc[data['NomeTipoSensore'] ==  str(measure)]
+		to_keep = ["DATE_TIME", "UTM32N_Est", "UTM32N_Nord", "ALTITUDE", "IDX", "IdSensore", "Utm_Nord", "UTM_Est", "Valore"]
+		data = data[to_keep]
 		merged = data
 
 	# grouping by date and coordinates of the stroke event. In this way I retrieve a group contaning all the sensor reads, for all the stations, for every stroke (ca 189 values, i.e.
@@ -110,13 +115,13 @@ def interpolatePollutants(data, measure, flag):
 		model = 'spherical'
 		print("Interpolation model:", model)
 	elif measure == "Biossido di Azoto":
-		model = 'power'
+		model = 'exponential'
 		print("Interpolation model:", model)
 	elif measure == "PM10 (SM2005)":
-		model='exponential'
+		model='spherical'
 		print("Interpolation model:", model)
 	elif measure == "Particelle sospese PM2.5":
-		model='exponential'
+		model='spherical'
 		print("Interpolation model:", model)
 	elif measure == "Benzene":
 		model='spherical'
@@ -164,8 +169,8 @@ def interpolatePollutants(data, measure, flag):
 	print("The process took ", end - start, " seconds", "\n")
 	return out
 
-N_DAYS = 3
-N_HOURS = 24
+N_DAYS = 5
+N_HOURS = 12
 
 file_to_open = ''
 
@@ -266,5 +271,6 @@ for year in range (2015, 2018 + 1):
 	
 	table.to_csv("pollutants_daily_" + str(year) + file_to_open + ".csv", sep=',', decimal='.', header=True, index=False)
 	print("=============================================\n")
-	
-print("The whole process took", time.tim() - start, "seconds")
+
+end = time.time()
+print("The whole process took", str(timedelta(seconds=(end-start))), "seconds")
