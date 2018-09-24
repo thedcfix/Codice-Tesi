@@ -1,8 +1,8 @@
 import pandas as pd
 import time
 
-N_DAYS = 3
-N_HOURS = 24
+N_DAYS = 5
+N_HOURS = 12
 
 file_to_open = ''
 

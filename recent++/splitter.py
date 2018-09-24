@@ -15,8 +15,8 @@ selection = data[col_list]
 
 print(selection)
 
-N_DAYS = 3
-N_HOURS = 24
+N_DAYS = 5
+N_HOURS = 12
 
 for year in range (2015, 2018 + 1):
 	# salvo: tabella intera dell'anno X, tabella ridotta dell'anno X e le tabelle ridotte dei lag period
@@ -32,13 +32,15 @@ for year in range (2015, 2018 + 1):
 	total.to_csv("tabella_completa_" + str(year) + ".csv", sep=',', decimal='.', header=True, index=False)
 	reduced.to_csv("tabella_ridotta_" + str(year) + ".csv", sep=',', decimal='.', header=True, index=False)
 	
+	double = reduced
+	
 	print("Generating lag periods...")
 	for i in range(int(24 * N_DAYS / N_HOURS)):
 		# generating the datetime every N_HOURS hours, up to N_DAYS before the stroke event
 		hour = N_HOURS * (i+1)
-		lag = reduced
+		lag = pd.read_csv("tabella_ridotta_" + str(year) + ".csv",sep=',', decimal='.')
 		
-		lag["DATE_TIME"] = reduced["DATE_TIME"] + timedelta(hours=-hour)
-		lag["IDX"] = lag.index
+		lag["DATE_TIME"] = pd.to_datetime(lag["DATE_TIME"])
+		lag["DATE_TIME"] = pd.to_datetime(lag["DATE_TIME"] - pd.Timedelta(hour, unit='h'))
 		
 		lag.to_csv("tabella_ridotta_" + str(year) + "_" + str(hour) + "H.csv", sep=',', decimal='.', header=True, index=False)
