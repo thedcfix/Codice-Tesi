@@ -6,7 +6,7 @@ N_HOURS = 12
 
 for year in range (2015, 2018 + 1):
 	print("Loading data for year", year)
-	df = pd.read_csv("FINAL_" + str(2015) + '.csv',sep=',', decimal='.')
+	df = pd.read_csv("FINAL_" + str(year) + '.csv',sep=',', decimal='.')
 
 	# filters are used to keep reasonable values
 	# in some cases, when coordinates are fare from the closest station, the exponential model can lead to extremely high/low values. Those measures are cut
