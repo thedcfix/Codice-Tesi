@@ -37,7 +37,7 @@ for year in range (2015, 2018 + 1):
 		pollutants_daily = pollutants_daily.drop(['DATE_TIME', 'UTM32N_Est', 'UTM32N_Nord', 'ALTITUDE'], axis=1)
 		
 		weather = weather.rename(index=str, columns={"TEMPERATURE": "TEMPERATURE_" + str(hour) + "H", "HUMIDITY": "HUMIDITY_" + str(hour) + "H"})
-		pollutants = pollutants.rename(index=str, columns={"CO": "CO_" + str(hour) + "H", "O3": "O3" + str(hour) + "H", "NOx": "NOx_" + str(hour) + "H", "NO2": "NO2_" + str(hour) + "H"})
+		pollutants = pollutants.rename(index=str, columns={"CO": "CO_" + str(hour) + "H", "O3": "O3_" + str(hour) + "H", "NOx": "NOx_" + str(hour) + "H", "NO2": "NO2_" + str(hour) + "H"})
 		pollutants_daily = pollutants_daily.rename(index=str, columns={"PM10": "PM10_" + str(hour) + "H", "PM25": "PM25_" + str(hour) + "H", "BENZENE": "BENZENE_" + str(hour) + "H"})
 		
 		# joining the sensors data with the strokes data on the basis of the date 
