@@ -9,7 +9,7 @@ print("\nMerging...")
 data = pd.merge(st, data, how='inner', on=['IdSensore', 'IdSensore'])
 
 print("\nFiltering...")
-data = data.loc[data.NomeTipoSensore == "Biossido di Azoto"]
+data = data.loc[data.NomeTipoSensore == "Ozono"]
 data = data.loc[data.Comune == "Milano"]
 
 data["DATE_TIME"] = pd.to_datetime(data["DATE_TIME"])
