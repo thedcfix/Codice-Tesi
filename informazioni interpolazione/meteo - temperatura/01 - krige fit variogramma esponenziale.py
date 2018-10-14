@@ -177,7 +177,12 @@ bw = LAG_M
 hs = np.arange(0,DISTANCE_KM * 1000, LAG_M)
 sv = SV( data, hs, bw )
 
-
+print(sv)
+import pandas as pd 
+df = pd.DataFrame(columns=["X", "Y", "M"])
+df["X"] = pd.Series(sv[0])
+df["Y"] = pd.Series(sv[1])
+df.to_csv("file_path.csv", sep=';', decimal=',', index=False)
 
 plt.plot( sv[0], sv[1], '.-' )
 plt.xlabel('Lag [Km]')
@@ -201,10 +206,12 @@ plt.savefig('sample_semivariogram.png',fmt='png',dpi=200)
 sp = cvmodel(data, model=exponential, hs=np.arange(0,DISTANCE_KM * 1000, LAG_M), bw=LAG_M)
 
 plt.plot( sv[0], sv[1], '.-' )
-plt.plot( sv[0], sp(sv[0])) ;
+plt.plot( sv[0], sp(sv[0]))
+df["M"] = pd.Series(sp(sv[0]))
+df.to_csv("file_path.csv", sep=';', decimal=',', index=False)
 plt.title('Exponential Model')
 plt.ylabel('Semivariance')
 plt.xlabel('Lag [m]')
 plt.savefig('semivariogram_model_exponential.png',fmt='png',dpi=200)
 		
-print(krige( data, exponential, hs, bw, (521463.91, 5102074.63), 16 ))
+#print(krige( data, exponential, hs, bw, (521463.91, 5102074.63), 16 ))
