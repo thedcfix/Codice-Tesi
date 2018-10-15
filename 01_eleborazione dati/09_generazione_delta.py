@@ -20,7 +20,7 @@ for year in range(2015, 2018):
 		
 		
 		# delta nei giorni precedenti
-		data["DELTA_" + VAR + "_" + str(day-1) + str(day) + "D"] = data[VAR + "_" + str(24 * day) + "H"] - data[time]
+		data["DELTA_" + VAR + "_D" + str(day-1) + str(day)] = data[VAR + "_" + str(24 * day) + "H"] - data[time]
 		
 		# 12H meno ictus + 24H - 12H suddiviso in H1 e H2 rispettivamente
 		data["DELTA_" + VAR + "_" + str(12) + "_H1_D" + str(day-1) + str(day)] = data[VAR + "_" + str(delta) + "H"] - data[time]
