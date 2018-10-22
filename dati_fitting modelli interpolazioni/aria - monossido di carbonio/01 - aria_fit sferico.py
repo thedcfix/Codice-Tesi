@@ -177,34 +177,27 @@ bw = LAG_M
 hs = np.arange(0,DISTANCE_KM * 1000, LAG_M)
 sv = SV( data, hs, bw )
 
+import pandas as pd 
+df = pd.DataFrame(columns=["X", "Y", "M"])
+df["X"] = pd.Series(sv[0])
+df["Y"] = pd.Series(sv[1])
+df.to_csv("sph.csv", sep=';', decimal=',', index=False)
 
-
-plt.plot( sv[0], sv[1], '.-' )
-plt.xlabel('Lag [Km]')
-plt.ylabel('Semivariance')
-plt.title('Sample Semivariogram') ;
+plt.plot( sv[0], np.sqrt(sv[1]), '.-' )
+plt.xlabel('Lag [m]')
+plt.ylabel('Semideviation [mg/m^3]')
 plt.savefig('sample_semivariogram.png',fmt='png',dpi=200)
-
-# range_value = 0.95 * sv[1][-1]
-# nugget = sv[1][0] - 0
-
-# print(nugget)
-
-# for value in range(len(sv[1])):
-	# if sv[1][value] >= range_value:
-		# range = sv[0][value]
-		# break
-
-# print(range)
 
 # model fitting
 sp = cvmodel(data, model=spherical, hs=np.arange(0,DISTANCE_KM * 1000, LAG_M), bw=LAG_M)
 
-plt.plot( sv[0], sv[1], '.-' )
-plt.plot( sv[0], sp(sv[0])) ;
+plt.plot( sv[0], np.sqrt(sv[1]), '.-' )
+plt.plot( sv[0], np.sqrt(sp(sv[0])))
+
+df["M"] = pd.Series(sp(sv[0]))
+df.to_csv("sph.csv", sep=';', decimal=',', index=False)
+
 plt.title('Spherical Model')
-plt.ylabel('Semivariance')
+plt.ylabel('Semideviation [mg/m^3]')
 plt.xlabel('Lag [m]')
 plt.savefig('semivariogram_model_spherical.png',fmt='png',dpi=200)
-		
-print(krige( data, exponential, hs, bw, (521463.91, 5102074.63), 16 ))
