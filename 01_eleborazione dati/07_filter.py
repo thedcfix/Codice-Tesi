@@ -15,6 +15,15 @@ for year in range (2015, 2018 + 1):
 	# humidity % ranges between 0 and 100
 	df = df[df['HUMIDITY'].between(0, 100, inclusive=True)]
 	
+	# values > 0
+	df = df[df['CO'] > 0]
+	df = df[df['O3'] > 0]
+	df = df[df['NOx'] > 0]
+	df = df[df['NO2'] > 0]
+	df = df[df['PM10'] > 0]
+	df = df[df['PM25'] > 0]
+	df = df[df['BENZENE'] > 0]
+	
 	# other measures do not suffer for such problems
 	
 	# filter on existance
@@ -32,6 +41,15 @@ for year in range (2015, 2018 + 1):
 		
 		# humidity % ranges between 0 and 100
 		df = df[df['HUMIDITY' + '_' + str(hour) + 'H'].between(0, 100, inclusive=True)]
+		
+		# values > 0
+		df = df[df['CO' + '_' + str(hour) + 'H'] > 0]
+		df = df[df['O3' + '_' + str(hour) + 'H'] > 0]
+		df = df[df['NOx' + '_' + str(hour) + 'H'] > 0]
+		df = df[df['NO2' + '_' + str(hour) + 'H'] > 0]
+		df = df[df['PM10' + '_' + str(hour) + 'H'] > 0]
+		df = df[df['PM25' + '_' + str(hour) + 'H'] > 0]
+		df = df[df['BENZENE' + '_' + str(hour) + 'H'] > 0]
 		
 		# other measures do not suffer for such problems
 		
