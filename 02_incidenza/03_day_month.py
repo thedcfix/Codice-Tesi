@@ -19,5 +19,5 @@ combined = data.groupby(["MESE", "DAY_OF_WEEK"]).size()
 
 print("Saving...")
 #days.to_csv("days.csv", sep=';', decimal='.', header=False, index=True)
-#months.to_csv("months.csv", sep=';', decimal='.', header=False, index=True)
+months.to_csv("months.csv", sep=';', decimal='.', header=False, index=True)
 #combined.to_csv("combined.csv", sep=';', decimal='.', header=False, index=True)
