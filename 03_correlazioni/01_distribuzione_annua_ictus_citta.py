@@ -9,13 +9,14 @@ data["DAY"] = data.DATE_TIME.dt.day
 data["DATE_TIME"] = data['DATE_TIME'].dt.strftime('%d/%m/%Y')
 data["DATE_TIME"] = pd.to_datetime(data["DATE_TIME"])
 
+year = 2015
 
-data = data.loc[data.DATE_TIME.dt.year == 2015]
+data = data.loc[data.DATE_TIME.dt.year == year]
 data = data.loc[data.DS_TOWN == 'MILANO']
 
 data = data.groupby(['ANNO', 'MESE', 'DAY']).count()
 
-new = pd.date_range(start='1/1/2015', end='31/12/2015')
+new = pd.date_range(start='1/1/'+str(year), end='31/12/'+str(year))
 new = pd.DataFrame({'DATES': new, 'YEAR': new.year, 'MONTH': new.month, 'DAY': new.day})
 
 data.to_csv("TEMP.csv", sep=';', decimal=',', header=True, index=True)
