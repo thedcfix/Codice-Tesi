@@ -18,7 +18,7 @@ for year in range (2015, 2018 + 1):
 
 	result = merged
 	
-	result = result.loc[result.Comune == "Como"]
+	result = result.loc[result.Comune == "Milano"]
 	result["MONTH"] = result["DATE_TIME"].dt.month
 	result = result.loc[result["DATE_TIME"].dt.year == year]
 	
