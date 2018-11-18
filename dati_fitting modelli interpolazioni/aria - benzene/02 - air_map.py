@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 
 import shapefile as shp
-sf = shp.Reader("C:\\Users\\david\\Desktop\\Codice-Tesi\\shapefile\\Regione_polygon.shp")
+sf = shp.Reader("Regione_polygon.shp")
 
 # reading the data
 data = pd.read_csv('result.csv',sep=';', decimal='.')
@@ -91,7 +91,10 @@ for shape in sf.shapeRecords():
 	
 	plt.plot(x,y)
 
-plt.axis('off')
+#plt.axis('off')
+plt.title('Benzene [µg/m^3]')
+plt.xlabel('Longitudine [UTM32N_Est]')
+plt.ylabel('Latitudine [UTM32N_Nord]')
 plt.savefig("Mappa_benzene.png", dpi=300)
 plt.show()
 
