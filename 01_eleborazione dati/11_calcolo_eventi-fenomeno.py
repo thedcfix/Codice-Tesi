@@ -11,7 +11,7 @@ year = 2015
 frames = [data1, data2, data3]
 data = pd.concat(frames)
 data = data.loc[data.DS_TOWN == "MILANO"]
-data = data.loc[data.ANNO == year]
+#data = data.loc[data.ANNO == year]
 
 data.to_csv("CONCLUSIONE.csv", sep=';', decimal=',', header=True, index=False)
 
@@ -25,5 +25,5 @@ media = data.groupby(['ANNO', 'MESE', 'DAY'])[str(sys.argv[1])].mean()
 data = pd.DataFrame({'EVENTI': numero, 'MEDIA '+str(sys.argv[1]): media})
 data.to_csv("OUT_GIORNO.csv", sep=';', decimal=',', header=True)
 
-#print("Correlazione con", str(sys.argv[1]), "anno", year, ":", data["EVENTI"].corr(data['MEDIA '+str(sys.argv[1])]))
+print("Correlazione con", str(sys.argv[1]), "anni 2015-2017:", data["EVENTI"].corr(data['MEDIA '+str(sys.argv[1])]))
 print(round(data["EVENTI"].corr(data['MEDIA '+str(sys.argv[1])]), 3))
