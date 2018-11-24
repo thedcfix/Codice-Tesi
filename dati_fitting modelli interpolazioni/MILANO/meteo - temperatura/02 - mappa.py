@@ -13,7 +13,6 @@ import matplotlib.patches as mpatches
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
-
 import shapefile as shp
 sf = shp.Reader("L090102_ComuneMilano.shp")
 
@@ -21,29 +20,15 @@ sf = shp.Reader("L090102_ComuneMilano.shp")
 data = pd.read_csv('result.csv',sep=';', decimal='.')
 col_list = ["UTM_Est", "UTM_Nord", "Valore"]
 
-z = data[col_list]
+rr = data
+#leave one out
+data = data.loc[data.NomeStazione != "Milano v.Feltre"]
+
+#selezione colonne
 data = np.array(data[col_list])
 
 X0, X1 = data[:,0].min(), data[:,0].max()
 Y0, Y1 = data[:,1].min(), data[:,1].max()
-
-#tutta allargata
-#X0 = 450000
-#X1 = 700000
-#Y0 = 4930000
-#Y1 = 5180000
-
-# # zone utili
-# X0 = 463000
-# X1 = 666000
-# Y0 = 4950000
-# Y1 = 5150000
-
-# area hinterland
-# X0 = 497000
-# X1 = 536000
-# Y0 = 5025000
-# Y1 = 5060000
 
 # # milano
 X0 = 502500
@@ -56,34 +41,19 @@ NUM = 400.0
 gridx = np.arange(X0, X1, (X1-X0)/NUM)
 gridy = np.arange(Y0, Y1, (Y1-Y0)/NUM)
 
-# Create the ordinary kriging object. Required inputs are the X-coordinates of
-# the data points, the Y-coordinates of the data points, and the Z-values of the
-# data points. If no variogram model is specified, defaults to a linear variogram
-# model. If no variogram model parameters are specified, then the code automatically
-# calculates the parameters by fitting the variogram model to the binned
-# experimental semivariogram. The verbose kwarg controls code talk-back, and
-# the enable_plotting kwarg controls the display of the semivariogram.
 OK = OrdinaryKriging(data[:, 0], data[:, 1], data[:, 2], variogram_model='exponential', verbose=False, enable_plotting=False)
-#OK = UniversalKriging(data[:, 0], data[:, 1], data[:, 2], variogram_model='linear',
-#					  drift_terms=['regional_linear'])
-# Creates the kriged grid and the variance grid. Allows for kriging on a rectangular
-# grid of points, on a masked rectangular grid of points, or with arbitrary points.
-# (See OrdinaryKriging.__doc__ for more information.)
 z, ss = OK.execute('grid', gridx, gridy)
 
 print("AVG sigma:", np.average(ss), "\nMAX sigma:", np.max(ss), "\nMIN sigma:", np.min(ss), "\nMEDIAN sigma:", np.median(ss), "\n75° percentile sigma:", 
 		np.percentile(ss, 75), "\n90° percentile sigma:", np.percentile(ss, 90), "\n95° percentile sigma:", np.percentile(ss, 95), "\n99° percentile sigma:", np.percentile(ss, 99))
 
-#colors = ["sandybrown" for x in range(int(NUM))]
-#plt.hist(ss, bins=np.arange(ss.min(), ss.max()), color=colors)
-
 extent = (X0,X1,Y0,Y1)
-im = plt.imshow(z, cmap='oranges', aspect='auto', extent=extent, origin="lower") # pl is pylab imported a pl
+im = plt.imshow(z, cmap='Wistia', aspect='auto', extent=extent, origin="lower")
 plt.colorbar(im)
 
-#from scipy.ndimage import imread
-#im = imread('Maschera.png', mode='RGBA')
-#plt.imshow(im, extent=extent)
+from scipy.ndimage import imread
+im = imread('Maschera_Milano.png', mode='RGBA')
+plt.imshow(im, extent=extent)
 
 for shape in sf.shapeRecords():
 	x = [i[0] for i in shape.shape.points[:]]
@@ -91,12 +61,22 @@ for shape in sf.shapeRecords():
 	
 	plt.plot(x,y)
 
+data = rr
+import math
+
+print("\n\n--- Delta temperature rispetto alle misurazioni delle centraline ---\n\n")
+for staz in ["Milano Lambrate", "Milano v.Brera", "Milano v.Juvara", "Milano v.Marche", "Milano P.zza Zavattari", "Milano v.Feltre"]:
+	val = float(data.loc[data.NomeStazione == staz]["Valore"])
+	res, sigma = OK.execute('grid', float(data.loc[data.NomeStazione == staz]["UTM_Est"]), float(data.loc[data.NomeStazione == staz]["UTM_Nord"]))
+	res = res[0][0]
+	dev_std = math.sqrt(abs(sigma[0][0]))
+
+	print("Centralina di "+staz+"\nVal. letto:", val, "\tVal. interpolato:", res, "\tDelta:", res-val, "\tDev_std:", dev_std)
+
+
 #plt.axis('off')
 plt.title('Temperatura [°C]')
 plt.xlabel('Longitudine [UTM32N_Est]')
 plt.ylabel('Latitudine [UTM32N_Nord]')
 plt.savefig("Mappa_temperatura.png", dpi=300)
 plt.show()
-
-# Writes the kriged grid to an ASCII grid file.
-#kt.write_asc_grid(gridx, gridy, z, filename="output.asc")
