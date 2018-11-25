@@ -22,7 +22,8 @@ col_list = ["UTM_Est", "UTM_Nord", "Valore"]
 
 rr = data
 #leave one out
-data = data.loc[data.NomeStazione != "Milano v.Feltre"]
+non = "Milano v.Feltre"
+data = data.loc[data.NomeStazione != non]
 
 #selezione colonne
 data = np.array(data[col_list])
@@ -70,6 +71,8 @@ for staz in ["Milano Lambrate", "Milano v.Brera", "Milano v.Juvara", "Milano v.M
 	res, sigma = OK.execute('grid', float(data.loc[data.NomeStazione == staz]["UTM_Est"]), float(data.loc[data.NomeStazione == staz]["UTM_Nord"]))
 	res = res[0][0]
 	dev_std = math.sqrt(abs(sigma[0][0]))
+	if staz != non:
+		plt.scatter(float(data.loc[data.NomeStazione == staz]["UTM_Est"]), float(data.loc[data.NomeStazione == staz]["UTM_Nord"]), color='red', marker='o')
 
 	print("Centralina di "+staz+"\nVal. letto:", val, "\tVal. interpolato:", res, "\tDelta:", res-val, "\tDev_std:", dev_std)
 
@@ -77,6 +80,7 @@ for staz in ["Milano Lambrate", "Milano v.Brera", "Milano v.Juvara", "Milano v.M
 #plt.axis('off')
 plt.title('Temperatura [°C]')
 plt.xlabel('Longitudine [UTM32N_Est]')
+plt.xticks([502500,507600, 513700, 519100,522400])
 plt.ylabel('Latitudine [UTM32N_Nord]')
 plt.savefig("Mappa_temperatura.png", dpi=300)
 plt.show()
