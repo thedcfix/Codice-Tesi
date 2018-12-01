@@ -1,10 +1,10 @@
 import pandas as pd
-data = pd.read_csv('CORR_PM25.csv',sep=';', decimal=',')
+data = pd.read_csv('CORR_PM10.csv',sep=';', decimal=',')
 import time
 
 step = 5
 base = 0
-top = 150
+top = 165
 current = base
 
 dict = {}

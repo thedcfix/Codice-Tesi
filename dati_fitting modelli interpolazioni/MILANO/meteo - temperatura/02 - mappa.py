@@ -22,8 +22,8 @@ col_list = ["UTM_Est", "UTM_Nord", "Valore"]
 
 rr = data
 #leave one out
-non = "Milano v.Feltre"
-data = data.loc[data.NomeStazione != non]
+#non = "Milano v.Feltre"
+#data = data.loc[data.NomeStazione != non]
 
 #selezione colonne
 data = np.array(data[col_list])
@@ -63,18 +63,24 @@ for shape in sf.shapeRecords():
 	plt.plot(x,y)
 
 data = rr
+delta = []
+dev = []
 import math
 
 print("\n\n--- Delta temperature rispetto alle misurazioni delle centraline ---\n\n")
 for staz in ["Milano Lambrate", "Milano v.Brera", "Milano v.Juvara", "Milano v.Marche", "Milano P.zza Zavattari", "Milano v.Feltre"]:
-	val = float(data.loc[data.NomeStazione == staz]["Valore"])
-	res, sigma = OK.execute('grid', float(data.loc[data.NomeStazione == staz]["UTM_Est"]), float(data.loc[data.NomeStazione == staz]["UTM_Nord"]))
-	res = res[0][0]
-	dev_std = math.sqrt(abs(sigma[0][0]))
-	if staz != non:
+	if len(data.loc[data.NomeStazione == staz]["Valore"]) == 1:
+		val = float(data.loc[data.NomeStazione == staz]["Valore"])
+		res, sigma = OK.execute('grid', float(data.loc[data.NomeStazione == staz]["UTM_Est"]), float(data.loc[data.NomeStazione == staz]["UTM_Nord"]))
+		res = res[0][0]
+		dev_std = math.sqrt(abs(sigma[0][0]))
+		#if staz != non:
 		plt.scatter(float(data.loc[data.NomeStazione == staz]["UTM_Est"]), float(data.loc[data.NomeStazione == staz]["UTM_Nord"]), color='red', marker='o')
-
-	print("Centralina di "+staz+"\nVal. letto:", val, "\tVal. interpolato:", res, "\tDelta:", res-val, "\tDev_std:", dev_std)
+		dev.append(dev_std)
+		delta.append(res-val)
+		print("Centralina di "+staz+"\nVal. letto:", val, "\tVal. interpolato:", res, "\tDelta:", res-val, "\tDev_std:", dev_std)
+		
+print("\n\nAVG delta:", np.mean(delta), "\nAVG STD_DEV:", np.mean(dev))
 
 
 #plt.axis('off')
